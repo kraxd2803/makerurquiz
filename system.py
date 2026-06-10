@@ -5,6 +5,7 @@ import pandas as pd
 import json
 import re
 from docx import Document
+from pypdf import PdfReader
 
 # =========================
 # CONFIG
@@ -63,7 +64,7 @@ with col1:
     else:
         uploaded_file = st.file_uploader(
             "Upload file",
-            type=["txt", "docx"]
+            type=["txt", "docx","pdf"]
         )
 
         if uploaded_file:
@@ -78,7 +79,16 @@ with col1:
                         para.text
                         for para in doc.paragraphs
                     )
+                elif uploaded_file.name.endswith(".pdf"):
 
+                    reader = PdfReader(uploaded_file)
+
+                    raw_text = ""
+
+                    for page in reader.pages:
+                        text = page.extract_text()
+                        if text:
+                            raw_text += text + "\n"
                 else:
                     raw_text = uploaded_file.read().decode("utf-8")
 
