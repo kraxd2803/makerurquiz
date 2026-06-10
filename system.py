@@ -308,10 +308,6 @@ if generate_btn:
 
             df_out = pd.DataFrame(rows)
 
-            st.success(f"Đã tạo {len(df_out)} câu hỏi.")
-            st.subheader("📋 Preview")
-            st.dataframe(df_out, use_container_width=True)
-
             # ====== Tạo TXT ======
             txt_content = ""
 
@@ -347,7 +343,7 @@ if generate_btn:
                 txt_content += "\n" + "=" * 50 + "\n\n"
 
             # ====== Tạo Word (.docx) ======
-            from io import BytesIO
+
             from docx import Document
 
             doc = Document()
@@ -359,22 +355,35 @@ if generate_btn:
             doc_buffer = BytesIO()
             doc.save(doc_buffer)
             doc_buffer.seek(0)
-
-            # ====== Download ======
-            st.download_button(
-                "⬇️ Tải TXT",
-                data=txt_content,
-                file_name="questions.txt",
-                mime="text/plain"
-            )
-
-            st.download_button(
-                "⬇️ Tải Word (.docx)",
-                data=doc_buffer,
-                file_name="questions.docx",
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            )
-
+            
+            st.session_state["df_out"] = df_out
+            st.session_state["txt_content"] = txt_content
+            st.session_state["doc_buffer"] = doc_buffer.getvalue()
+            st.session_state["q_list"] = q_list
+            
         except Exception as e:
-            st.error(f"Lỗi: {e}")
+            st.error(f"Lỗi: {e}")    
+if "df_out" in st.session_state:
 
+    st.subheader("📋 Preview")
+
+    st.dataframe(
+        st.session_state["df_out"],
+        use_container_width=True
+    )
+    
+            # ====== Download ======
+if "txt_content" in st.session_state:
+    st.download_button(
+        "⬇️ Tải TXT",
+        data=st.session_state["txt_content"],
+        file_name="questions.txt",
+        mime="text/plain"
+    )
+
+    st.download_button(
+        "⬇️ Tải Word (.docx)",
+        data=st.session_state["doc_buffer"],
+        file_name="questions.docx",
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    )
