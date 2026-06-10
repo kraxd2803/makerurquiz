@@ -6,6 +6,7 @@ import json
 import re
 from docx import Document
 from pypdf import PdfReader
+from io import BytesIO
 
 # =========================
 # CONFIG
@@ -242,7 +243,6 @@ KHÔNG markdown.
 KHÔNG giải thích thêm.
 """
 
-
 # =========================
 # GENERATE
 # =========================
@@ -254,9 +254,7 @@ if generate_btn:
         st.stop()
 
     with st.spinner("Đang tạo câu hỏi..."):
-
         try:
-
             prompt = make_prompt(
                 raw_text,
                 q_type,
@@ -269,125 +267,91 @@ if generate_btn:
                 contents=prompt
             )
 
-            model_text = response.text.strip()
+            model_text = (response.text or "").strip()
 
             # Xử lý nếu model trả markdown
-            model_text = re.sub(
-                r"^```json",
-                "",
-                model_text
-            )
-
-            model_text = re.sub(
-                r"```$",
-                "",
-                model_text
-            ).strip()
+            model_text = re.sub(r"^```json\s*", "", model_text)
+            model_text = re.sub(r"```$", "", model_text).strip()
 
             q_list = json.loads(model_text)
 
+            # ====== Tạo bảng preview ======
             rows = []
-
             for idx, item in enumerate(q_list, start=1):
+                options = item.get("options", {})
 
-                options = item.get("options")
-                if options:
+                if isinstance(options, dict):
+                    a = options.get("A", "")
+                    b = options.get("B", "")
+                    c = options.get("C", "")
+                    d = options.get("D", "")
+                elif isinstance(options, list):
+                    a = options[0] if len(options) > 0 else ""
+                    b = options[1] if len(options) > 1 else ""
+                    c = options[2] if len(options) > 2 else ""
+                    d = options[3] if len(options) > 3 else ""
+                else:
+                    a = b = c = d = ""
 
-                    if isinstance(options, dict):
-
-                        txt_content += f"A. {options.get('A', '')}\n"
-                        txt_content += f"B. {options.get('B', '')}\n"
-                        txt_content += f"C. {options.get('C', '')}\n"
-                        txt_content += f"D. {options.get('D', '')}\n"
-
-                    elif isinstance(options, list):
-
-                        labels = ["A", "B", "C", "D"]
-
-                        for j, opt in enumerate(options[:4]):
-                            txt_content += f"{labels[j]}. {opt}\n"
-
-                rows.append(
-                    {
-                        "id": idx,
-                        "type": item.get("type", q_type),
-                        "question": item.get("question", ""),
-                        "A": a,
-                        "B": b,
-                        "C": c,
-                        "D": d,
-                        "answer": item.get("answer", ""),
-                        "explanation": item.get(
-                            "explanation",
-                            item.get("hint", "")
-                        )
-                    }
-                )
+                rows.append({
+                    "id": idx,
+                    "type": item.get("type", q_type),
+                    "question": item.get("question", ""),
+                    "A": a,
+                    "B": b,
+                    "C": c,
+                    "D": d,
+                    "answer": item.get("answer", ""),
+                    "explanation": item.get("explanation", item.get("hint", "")),
+                    "keywords": ", ".join(item.get("keywords", [])) if isinstance(item.get("keywords"), list) else ""
+                })
 
             df_out = pd.DataFrame(rows)
 
-            st.success(
-                f"Đã tạo {len(df_out)} câu hỏi."
-            )
-
+            st.success(f"Đã tạo {len(df_out)} câu hỏi.")
             st.subheader("📋 Preview")
+            st.dataframe(df_out, use_container_width=True)
 
-            st.dataframe(
-                df_out,
-                use_container_width=True
-            )
-
+            # ====== Tạo TXT ======
             txt_content = ""
 
             for i, item in enumerate(q_list, start=1):
-
                 txt_content += f"Câu {i}: {item.get('question', '')}\n"
 
-    # Chỉ hiện A/B/C/D nếu có options
                 options = item.get("options")
 
-                if options:
-
+                if q_type == "Trắc nghiệm" and options:
                     if isinstance(options, dict):
-
                         txt_content += f"A. {options.get('A', '')}\n"
                         txt_content += f"B. {options.get('B', '')}\n"
                         txt_content += f"C. {options.get('C', '')}\n"
                         txt_content += f"D. {options.get('D', '')}\n"
-
                     elif isinstance(options, list):
-
                         labels = ["A", "B", "C", "D"]
-
                         for j, opt in enumerate(options[:4]):
                             txt_content += f"{labels[j]}. {opt}\n"
 
-    # Đáp án
                 if item.get("answer"):
                     txt_content += f"Đáp án: {item.get('answer')}\n"
 
-    # Giải thích
                 if item.get("explanation"):
                     txt_content += f"Giải thích: {item.get('explanation')}\n"
 
-    # Gợi ý
-                if item.get("hint"):
+                if q_type == "Tự luận" and item.get("hint"):
                     txt_content += f"Gợi ý: {item.get('hint')}\n"
 
-    # Keywords (tự luận)
-                if item.get("keywords"):
-                    txt_content += (
-                        "Từ khóa: "
-                        + ", ".join(item["keywords"])
-                        + "\n"
-                    )
+                if q_type == "Tự luận" and item.get("keywords"):
+                    if isinstance(item["keywords"], list):
+                        txt_content += "Từ khóa: " + ", ".join(item["keywords"]) + "\n"
 
                 txt_content += "\n" + "=" * 50 + "\n\n"
+
+            # ====== Tạo Word (.docx) ======
             from io import BytesIO
+            from docx import Document
 
             doc = Document()
-
-            doc.add_heading('MakeUrQuiz', level=1)
+            doc.add_heading("MakeUrQuiz", level=1)
 
             for line in txt_content.split("\n"):
                 doc.add_paragraph(line)
@@ -395,20 +359,22 @@ if generate_btn:
             doc_buffer = BytesIO()
             doc.save(doc_buffer)
             doc_buffer.seek(0)
-            
+
+            # ====== Download ======
             st.download_button(
                 "⬇️ Tải TXT",
                 data=txt_content,
                 file_name="questions.txt",
                 mime="text/plain"
             )
+
             st.download_button(
                 "⬇️ Tải Word (.docx)",
                 data=doc_buffer,
                 file_name="questions.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-        except Exception as e:
 
+        except Exception as e:
             st.error(f"Lỗi: {e}")
 
