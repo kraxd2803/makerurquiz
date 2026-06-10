@@ -62,6 +62,7 @@ with col1:
         if len(raw_text) > MAX_CHARS:
             st.warning("Dữ liệu quá dài, chỉ lấy 10.000 ký tự đầu.")
             raw_text = raw_text[:MAX_CHARS]
+        
     else:
         uploaded_file = st.file_uploader(
             "Upload file",
@@ -104,6 +105,7 @@ with col1:
 
             except Exception as e:
                 st.error(f"Lỗi đọc file: {e}")
+st.info(f"Đã đọc {len(raw_text):,} ký tự")
 
 with col2:
 
