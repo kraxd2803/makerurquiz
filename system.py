@@ -1,4 +1,4 @@
-
+#thu vien su dung
 import streamlit as st
 from google import genai
 import pandas as pd
@@ -9,19 +9,17 @@ from pypdf import PdfReader
 from io import BytesIO
 import random
 
-# =========================
-# CONFIG
-# =========================
+
+# CONFIG( bản ai su dung)
 
 MODEL_NAME = "gemini-2.5-flash-lite"
 
 client = genai.Client(
-    api_key=st.secrets["GEMINI_API_KEY"]
+    api_key=st.secrets["GEMINI_API_KEY"] #mã api bảo mật gán biến 
 )
 
-# =========================
-# UI
-# =========================
+
+# UI(giao dien)
 
 st.set_page_config(
     page_title="MakeUrQuiz",
@@ -33,9 +31,8 @@ st.title("⚡ MakeUrQuiz - Tạo bộ câu hỏi từ tài liệu học tập")
 st.caption("Made by Đăng Khoa 🔰")
 
 
-# =========================
-# INPUT DATA
-# =========================
+# INP DATA(nhap du lieu)
+
 
 st.header("📚 Nguồn dữ liệu")
 
@@ -151,9 +148,8 @@ with col2:
     )
 
 
-# =========================
-# PROMPT
-# =========================
+
+# PROMPT (cau lenh huong dan ai tra loi)
 
 def make_prompt(text, q_type, num_q, difficulty):
 
@@ -256,9 +252,9 @@ KHÔNG markdown.
 KHÔNG giải thích thêm.
 """
 
-# =========================
-# GENERATE
-# =========================
+
+# GENERATE (tao file + ban xem thu)
+
 
 if generate_btn:
 
@@ -314,7 +310,7 @@ if generate_btn:
                             break
 
                     item["options"] = new_options
-            # ====== Tạo bảng preview ======
+            #  Tạo bảng preview
             rows = []
             for idx, item in enumerate(q_list, start=1):
                 options = item.get("options", {})
@@ -347,7 +343,7 @@ if generate_btn:
 
             df_out = pd.DataFrame(rows)
 
-            # ====== Tạo TXT ======
+            # Tạo TXT
             txt_content = ""
 
             for i, item in enumerate(q_list, start=1):
@@ -381,7 +377,7 @@ if generate_btn:
 
                 txt_content += "\n" + "=" * 50 + "\n\n"
 
-            # ====== Tạo Word (.docx) ======
+            #  Tạo Word (.docx)
 
             from docx import Document
 
@@ -414,7 +410,7 @@ if "df_out" in st.session_state:
         use_container_width=True
     )
     
-            # ====== Download ======
+            #  Download (tai file )
 if "txt_content" in st.session_state:
     st.download_button(
         "⬇️ Tải file TXT",
