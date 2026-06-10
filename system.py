@@ -417,14 +417,14 @@ if "df_out" in st.session_state:
             # ====== Download ======
 if "txt_content" in st.session_state:
     st.download_button(
-        "⬇️ Tải TXT",
+        "⬇️ Tải file TXT",
         data=st.session_state["txt_content"],
         file_name=f"quiz_{q_type}_{num_q}cau.txt",
         mime="text/plain"
     )
 
     st.download_button(
-        "⬇️ Tải Word (.docx)",
+        "⬇️ Tải file Word (.docx)",
         data=st.session_state["doc_buffer"],
         file_name=f"quiz_{q_type}_{num_q}cau.docx",
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
