@@ -4,6 +4,7 @@ from google import genai
 import pandas as pd
 import json
 import re
+from docx import Document
 
 # =========================
 # CONFIG
@@ -61,26 +62,34 @@ with col1:
             raw_text = raw_text[:MAX_CHARS]
     else:
         uploaded_file = st.file_uploader(
-            "Upload TXT hoặc CSV",
-            type=["txt", "csv"]
+            "Upload file",
+            type=["txt", "docx"]
         )
 
         if uploaded_file:
 
             try:
 
-                if uploaded_file.name.endswith(".csv"):
-                    df = pd.read_csv(uploaded_file)
+                if uploaded_file.name.endswith(".docx"):
+
+                    doc = Document(uploaded_file)
 
                     raw_text = "\n".join(
-                        df.astype(str)
-                        .fillna("")
-                        .apply(lambda r: " ".join(r), axis=1)
-                        .tolist()
+                        para.text
+                        for para in doc.paragraphs
                     )
 
                 else:
                     raw_text = uploaded_file.read().decode("utf-8")
+
+                MAX_CHARS = 10000
+
+                if len(raw_text) > MAX_CHARS:
+                    st.warning(
+                        f"File quá dài ({len(raw_text):,} ký tự). "
+                        f"Chỉ lấy {MAX_CHARS:,} ký tự đầu."
+                    )
+                    raw_text = raw_text[:MAX_CHARS]
 
             except Exception as e:
                 st.error(f"Lỗi đọc file: {e}")
