@@ -7,6 +7,7 @@ import re
 from docx import Document
 from pypdf import PdfReader
 from io import BytesIO
+import random
 
 # =========================
 # CONFIG
@@ -286,7 +287,33 @@ if generate_btn:
             model_text = re.sub(r"```$", "", model_text).strip()
 
             q_list = json.loads(model_text)
+            for item in q_list:
 
+                options = item.get("options")
+
+                if isinstance(options, dict):
+
+                    correct_letter = item.get("answer")
+
+                    correct_text = options.get(correct_letter)
+
+                    option_values = list(options.values())
+
+                    random.shuffle(option_values)
+
+                     new_options = {
+                        "A": option_values[0],
+                        "B": option_values[1],
+                        "C": option_values[2],
+                        "D": option_values[3]
+                    }
+
+                    for letter, value in new_options.items():
+                        if value == correct_text:
+                            item["answer"] = letter
+                            break
+
+        item["options"] = new_options
             # ====== Tạo bảng preview ======
             rows = []
             for idx, item in enumerate(q_list, start=1):
