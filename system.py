@@ -122,7 +122,7 @@ with col2:
         "Số lượng câu hỏi",
         min_value=1,
         max_value=40,
-        value=4
+        value=1
     )
     max_questions = max(1, len(raw_text) // 100)
 
