@@ -29,7 +29,7 @@ st.set_page_config(
 
 st.title("⚡ MakeUrQuiz")
 st.caption("Made by Đăng Khoa 🔰")
-st.caption("Tạo bộ câu hỏi từ tài liệu học tập")
+st.subheader("Tạo bộ câu hỏi từ tài liệu học tập")
 
 # =========================
 # INPUT DATA
@@ -109,17 +109,17 @@ with col2:
     q_type = st.selectbox(
         "Loại câu hỏi",
         [
-            "Trắc nghiệm (MCQ)",
+            "Trắc nghiệm",
             "Tự luận",
             "True/False",
-            "Mix"
+            "Tổng hợp"
         ]
     )
 
     num_q = st.number_input(
         "Số lượng câu hỏi",
         min_value=1,
-        max_value=100,
+        max_value=40,
         value=4
     )
 
@@ -144,7 +144,7 @@ with col2:
 
 def make_prompt(text, q_type, num_q, difficulty):
 
-    if q_type == "Trắc nghiệm (MCQ)":
+    if q_type == "Trắc nghiệm":
 
         instruction = f"""
 Tạo {num_q} câu hỏi trắc nghiệm.
