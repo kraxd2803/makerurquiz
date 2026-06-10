@@ -290,18 +290,22 @@ if generate_btn:
 
             for idx, item in enumerate(q_list, start=1):
 
-                options = item.get("options", {})
+                options = item.get("options")
+                if options:
 
-                if isinstance(options, dict):
+                    if isinstance(options, dict):
 
-                    a = options.get("A", "")
-                    b = options.get("B", "")
-                    c = options.get("C", "")
-                    d = options.get("D", "")
+                        txt_content += f"A. {options.get('A', '')}\n"
+                        txt_content += f"B. {options.get('B', '')}\n"
+                        txt_content += f"C. {options.get('C', '')}\n"
+                        txt_content += f"D. {options.get('D', '')}\n"
 
-                else:
+                    elif isinstance(options, list):
 
-                    a = b = c = d = ""
+                        labels = ["A", "B", "C", "D"]
+
+                        for j, opt in enumerate(options[:4]):
+                            txt_content += f"{labels[j]}. {opt}\n"
 
                 rows.append(
                     {
@@ -338,37 +342,45 @@ if generate_btn:
             for i, item in enumerate(q_list, start=1):
 
                 txt_content += f"Câu {i}: {item.get('question', '')}\n"
-                options = item.get("options", {})
 
-                if isinstance(options, dict):
+    # Chỉ hiện A/B/C/D nếu có options
+                options = item.get("options")
 
-                    txt_content += f"A. {options.get('A', '')}\n"
-                    txt_content += f"B. {options.get('B', '')}\n"
-                    txt_content += f"C. {options.get('C', '')}\n"
-                    txt_content += f"D. {options.get('D', '')}\n"
+                if options:
 
-                elif isinstance(options, list):
+                    if isinstance(options, dict):
 
-                    labels = ["A", "B", "C", "D"]
+                        txt_content += f"A. {options.get('A', '')}\n"
+                        txt_content += f"B. {options.get('B', '')}\n"
+                        txt_content += f"C. {options.get('C', '')}\n"
+                        txt_content += f"D. {options.get('D', '')}\n"
 
-                    for j, opt in enumerate(options[:4]):
-                        txt_content += f"{labels[j]}. {opt}\n"
-                
-                options = item.get("options", {})
+                    elif isinstance(options, list):
 
-                if isinstance(options, dict):
-                    txt_content += f"A. {options.get('A', '')}\n"
-                    txt_content += f"B. {options.get('B', '')}\n"
-                    txt_content += f"C. {options.get('C', '')}\n"
-                    txt_content += f"D. {options.get('D', '')}\n"
+                        labels = ["A", "B", "C", "D"]
 
-                txt_content += f"Đáp án: {item.get('answer', '')}\n"
+                        for j, opt in enumerate(options[:4]):
+                            txt_content += f"{labels[j]}. {opt}\n"
 
+    # Đáp án
+                if item.get("answer"):
+                    txt_content += f"Đáp án: {item.get('answer')}\n"
+
+    # Giải thích
                 if item.get("explanation"):
                     txt_content += f"Giải thích: {item.get('explanation')}\n"
 
+    # Gợi ý
                 if item.get("hint"):
                     txt_content += f"Gợi ý: {item.get('hint')}\n"
+
+    # Keywords (tự luận)
+                if item.get("keywords"):
+                    txt_content += (
+                        "Từ khóa: "
+                        + ", ".join(item["keywords"])
+                        + "\n"
+                    )
 
                 txt_content += "\n" + "=" * 50 + "\n\n"
             from io import BytesIO
