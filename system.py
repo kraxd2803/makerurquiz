@@ -111,8 +111,7 @@ with col2:
         [
             "Trắc nghiệm",
             "Tự luận",
-            "True/False",
-            "Tổng hợp"
+            "True/False"
         ]
     )
 
@@ -217,7 +216,7 @@ Ví dụ:
 Trả về JSON LIST duy nhất.
 """
 
-    elif q_type == "True/False":
+    else:
 
         instruction = f"""
 Tạo {num_q} câu hỏi đúng/sai.
@@ -232,34 +231,6 @@ Mỗi câu gồm:
 Trả về JSON LIST duy nhất.
 """
 
-    else:
-
-        instruction = f"""
-Tạo {num_q} câu hỏi hỗn hợp.
-
-Độ khó: {difficulty}
-
-Mỗi item gồm:
-- thể loại câu hỏi
-- câu hỏi
-- lựa chọn (nếu có)
-- đáp án
-- giải thích
-
-Trả về JSON LIST duy nhất.
-"""
-
-    return f"""
-{instruction}
-
-NỘI DUNG:
-
-{text}
-
-CHỈ TRẢ VỀ JSON.
-KHÔNG markdown.
-KHÔNG giải thích thêm.
-"""
 
 
 # =========================
