@@ -390,14 +390,31 @@ if generate_btn:
                     txt_content += f"Gợi ý: {item.get('hint')}\n"
 
                 txt_content += "\n" + "=" * 50 + "\n\n"
+            from io import BytesIO
 
+            doc = Document()
+
+            doc.add_heading('MakeUrQuiz', level=1)
+
+            for line in txt_content.split("\n"):
+                doc.add_paragraph(line)
+
+            doc_buffer = BytesIO()
+            doc.save(doc_buffer)
+            doc_buffer.seek(0)
+            
             st.download_button(
                 "⬇️ Tải TXT",
                 data=txt_content,
                 file_name="questions.txt",
                 mime="text/plain"
             )
-
+            st.download_button(
+                "⬇️ Tải Word (.docx)",
+                data=doc_buffer,
+                file_name="questions.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
         except Exception as e:
 
             st.error(f"Lỗi: {e}")
