@@ -64,7 +64,7 @@ with col1:
     else:
         uploaded_file = st.file_uploader(
             "Upload file",
-            type=["txt", "docx","pdf"]
+            type=["txt", "docx","pdf(chỉ định dạng kí tự)"]
         )
 
         if uploaded_file:
