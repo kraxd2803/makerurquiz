@@ -230,7 +230,17 @@ Mỗi câu gồm:
 
 Trả về JSON LIST duy nhất.
 """
+    return f"""
+{instruction}
 
+NỘI DUNG:
+
+{text}
+
+CHỈ TRẢ VỀ JSON.
+KHÔNG markdown.
+KHÔNG giải thích thêm.
+"""
 
 
 # =========================
