@@ -377,7 +377,7 @@ if generate_btn:
             st.error(f"Lỗi: {e}")    
 if "df_out" in st.session_state:
     st.success(
-        f"Đã tạo {len(df_out)} câu hỏi."
+        f"Đã tạo {len(st.session_state['df_out'])} câu hỏi."
     )
 
     st.subheader("📋 Preview")
