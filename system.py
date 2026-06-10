@@ -27,9 +27,9 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("⚡ MakeUrQuiz")
+st.title("⚡ MakeUrQuiz - Tạo bộ câu hỏi từ tài liệu học tập")
 st.caption("Made by Đăng Khoa 🔰")
-st.subheader("Tạo bộ câu hỏi từ tài liệu học tập")
+
 
 # =========================
 # INPUT DATA
