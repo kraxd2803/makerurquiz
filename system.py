@@ -101,7 +101,7 @@ with col2:
         "Số lượng câu hỏi",
         min_value=1,
         max_value=100,
-        value=10
+        value=4
     )
 
     difficulty = st.selectbox(
