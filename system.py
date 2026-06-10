@@ -301,7 +301,7 @@ if generate_btn:
 
                     random.shuffle(option_values)
 
-                     new_options = {
+                    new_options = {
                         "A": option_values[0],
                         "B": option_values[1],
                         "C": option_values[2],
