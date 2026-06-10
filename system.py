@@ -313,7 +313,7 @@ if generate_btn:
                             item["answer"] = letter
                             break
 
-        item["options"] = new_options
+                    item["options"] = new_options
             # ====== Tạo bảng preview ======
             rows = []
             for idx, item in enumerate(q_list, start=1):
