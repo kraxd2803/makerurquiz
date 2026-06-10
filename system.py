@@ -151,13 +151,34 @@ Tạo {num_q} câu hỏi trắc nghiệm.
 
 Độ khó: {difficulty}
 
-Mỗi câu gồm:
-- câu hỏi
-- lựa chọn (A,B,C,D)
-- đáp án
-- giải thích
+Mỗi câu phải có các field:
+
+- question
+- options
+- answer
+- explanation
+
+Trong đó:
+
+options là object gồm:
+"A", "B", "C", "D"
+
+Ví dụ:
+
+{{
+  "question": "...",
+  "options": {{
+    "A": "...",
+    "B": "...",
+    "C": "...",
+    "D": "..."
+  }},
+  "answer": "A",
+  "explanation": "..."
+}}
 
 Trả về JSON LIST duy nhất.
+Không dùng markdown.
 """
 
     elif q_type == "Tự luận":
@@ -167,10 +188,23 @@ Tạo {num_q} câu hỏi tự luận.
 
 Độ khó: {difficulty}
 
-Mỗi câu gồm:
-- câu hỏi
-- gợi ý nhỏ
-- các từ khóa quan trọng (key word)
+Tạo {num_q} câu hỏi tự luận.
+
+Mỗi câu phải có:
+
+- question
+- hint
+- keywords
+
+keywords là danh sách các từ khóa quan trọng.
+
+Ví dụ:
+
+{{
+  "question": "...",
+  "hint": "...",
+  "keywords": ["...", "..."]
+}}
 
 Trả về JSON LIST duy nhất.
 """
