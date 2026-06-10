@@ -152,10 +152,10 @@ Tạo {num_q} câu hỏi trắc nghiệm.
 Độ khó: {difficulty}
 
 Mỗi câu gồm:
-- question
-- options (A,B,C,D)
-- answer
-- explanation
+- câu hỏi
+- lựa chọn (A,B,C,D)
+- đáp án
+- giải thích
 
 Trả về JSON LIST duy nhất.
 """
@@ -168,8 +168,9 @@ Tạo {num_q} câu hỏi tự luận.
 Độ khó: {difficulty}
 
 Mỗi câu gồm:
-- question
-- hint
+- câu hỏi
+- gợi ý nhỏ
+- các từ khóa quan trọng (key word)
 
 Trả về JSON LIST duy nhất.
 """
@@ -182,9 +183,9 @@ Tạo {num_q} câu hỏi đúng/sai.
 Độ khó: {difficulty}
 
 Mỗi câu gồm:
-- question
-- answer
-- explanation
+- câu hỏi
+- đáp án (ONLY: TRUE/FALSE)
+- giải thích
 
 Trả về JSON LIST duy nhất.
 """
@@ -197,11 +198,11 @@ Tạo {num_q} câu hỏi hỗn hợp.
 Độ khó: {difficulty}
 
 Mỗi item gồm:
-- type
-- question
-- options (nếu có)
-- answer
-- explanation
+- thể loại câu hỏi
+- câu hỏi
+- lựa chọn (nếu có)
+- đáp án
+- giải thích
 
 Trả về JSON LIST duy nhất.
 """
@@ -314,7 +315,22 @@ if generate_btn:
             for i, item in enumerate(q_list, start=1):
 
                 txt_content += f"Câu {i}: {item.get('question', '')}\n"
+                options = item.get("options", {})
 
+                if isinstance(options, dict):
+
+                    txt_content += f"A. {options.get('A', '')}\n"
+                    txt_content += f"B. {options.get('B', '')}\n"
+                    txt_content += f"C. {options.get('C', '')}\n"
+                    txt_content += f"D. {options.get('D', '')}\n"
+
+                elif isinstance(options, list):
+
+                    labels = ["A", "B", "C", "D"]
+
+                    for j, opt in enumerate(options[:4]):
+                        txt_content += f"{labels[j]}. {opt}\n"
+                
                 options = item.get("options", {})
 
                 if isinstance(options, dict):
