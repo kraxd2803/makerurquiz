@@ -106,16 +106,7 @@ with col1:
             except Exception as e:
                 st.error(f"Lỗi đọc file: {e}")
 st.info(f"Đã đọc {len(raw_text):,} ký tự")
-max_questions = max(1, len(raw_text) // 100)
 
-if num_q > max_questions:
-
-    st.info(
-        f"Tài liệu hơi ngắn. "
-        f"Tự động giảm từ {num_q} xuống {max_questions} câu."
-    )
-
-    num_q = max_questions
 with col2:
 
     q_type = st.selectbox(
@@ -133,7 +124,17 @@ with col2:
         max_value=40,
         value=4
     )
+    max_questions = max(1, len(raw_text) // 100)
 
+    if num_q > max_questions:
+
+        st.info(
+            f"Tài liệu hơi ngắn. "
+            f"Tự động giảm từ {num_q} xuống {max_questions} câu."
+        )
+
+        num_q = max_questions
+    
     difficulty = st.selectbox(
         "Độ khó",
         [
