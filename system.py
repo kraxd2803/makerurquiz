@@ -10,7 +10,7 @@ from docx import Document
 # CONFIG
 # =========================
 
-MODEL_NAME = "gemini-2.5-flash"
+MODEL_NAME = "gemini-2.5-flash-lite"
 
 client = genai.Client(
     api_key=st.secrets["GEMINI_API_KEY"]
