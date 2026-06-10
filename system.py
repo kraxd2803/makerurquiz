@@ -151,17 +151,26 @@ Tạo {num_q} câu hỏi trắc nghiệm.
 
 Độ khó: {difficulty}
 
-Mỗi câu phải có các field:
+Mỗi câu phải có:
 
 - question
 - options
 - answer
 - explanation
 
-Trong đó:
+options phải gồm đúng 4 lựa chọn:
+A, B, C, D
 
-options là object gồm:
-"A", "B", "C", "D"
+answer chỉ được là:
+"A"
+hoặc
+"B"
+hoặc
+"C"
+hoặc
+"D"
+
+KHÔNG được ghi nội dung đáp án.
 
 Ví dụ:
 
@@ -173,12 +182,11 @@ Ví dụ:
     "C": "...",
     "D": "..."
   }},
-  "answer": "A",
+  "answer": "C",
   "explanation": "..."
 }}
 
 Trả về JSON LIST duy nhất.
-Không dùng markdown.
 """
 
     elif q_type == "Tự luận":
